@@ -22,60 +22,18 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Returns true if this BST is empty; otherwise, returns false.
     public boolean isEmpty()
     {
-        return root == null;
+        return false;
     }
 
     // Returns the number of elements in this BST.
     public int size()
     {
-        return size(root);
-    }
-    private int size(BinaryNode<T> node)
-    {
-        if(node == null)
-        {
-            return 0;
-        }
-        return 1 + size(node.getLeft()) + size(node.getRight());
+        return -1;
     }
 
     // Adds element to this BST. The tree retains its BST property.
     public void add (T element)
     {
-        
-        if(root == null)
-        {
-            root = new BinaryNode(element);
-        }
-        else
-        {
-            BinaryNode<T> temp = root;
-            while(temp != null)
-            {
-                int comparison = element.compareTo(temp.getInfo());
-                if(comparison < 0)
-                {
-                    if(temp.getLeft() == null)
-                    {
-                        temp.setLeft(new BinaryNode<>(element));
-                        
-                        return;
-                    }
-                    temp = temp.getLeft();
-                }
-                else
-                {
-                    if(temp.getRight() == null)
-                    {
-                        temp.setRight(new BinaryNode<>(element));
-                        return;
-                    }
-                    temp = temp.getRight();
-                }
-            }
-        }
-        
-
     }
 
     // Returns true if this BST contains an element e such that 
