@@ -22,18 +22,57 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Returns true if this BST is empty; otherwise, returns false.
     public boolean isEmpty()
     {
-        return false;
+        return root == null;
     }
 
     // Returns the number of elements in this BST.
     public int size()
     {
-        return -1;
+        return size(root);
+    }
+    private int size(BinaryNode<T> node)
+    {
+        if(node == null)
+        {
+            return 0;
+        }
+        return 1 + size(node.getLeft()) + size(node.getRight());
     }
 
     // Adds element to this BST. The tree retains its BST property.
     public void add (T element)
     {
+         if(root == null)
+        {
+            root = new BinaryNode(element);
+        }
+        else
+        {
+            BinaryNode<T> temp = root;
+            while(temp != null)
+            {
+                int comparison = element.compareTo(temp.getInfo());
+                if(comparison < 0)
+                {
+                    if(temp.getLeft() == null)
+                    {
+                        temp.setLeft(new BinaryNode<>(element));
+                        
+                        return;
+                    }
+                    temp = temp.getLeft();
+                }
+                else
+                {
+                    if(temp.getRight() == null)
+                    {
+                        temp.setRight(new BinaryNode<>(element));
+                        return;
+                    }
+                    temp = temp.getRight();
+                }
+            }
+        }
     }
 
     // Returns true if this BST contains an element e such that 
@@ -126,14 +165,61 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Removes an element e from this BST such that e.compareTo(element) == 0
     public void remove (T element)
     {
+        root = remove(element, root);
+    }
+    private BinaryNode<T> remove(T target, BinaryNode<T> node)
+    {
+        if(node == null)
+        {
+            return null;
+        }
+        else if(target.compareTo(node.getInfo()) < 0)
+        {
+            node.setLeft(remove(target, node.getLeft()));
+
+        }
+        else if(target.compareTo(node.getInfo()) > 0)
+        {
+            node.setRight(remove(target, node.getRight()));
+        }
+        else
+        {
+            node = removeNode(node);
+        }
+        return node; 
+    }
+    private BinaryNode<T> removeNode(BinaryNode<T> node)
+    {
+        T data;
+        if(node.getLeft() == null)
+        {
+            return node.getRight();
+        }
+        else if (node.getRight() == null)
+        {
+            return node.getLeft();
+        }
+        else
+        {
+            data = getPredecessor(node.getLeft());
+            node.setInfo(data);
+            node.setLeft(remove(data, node.getLeft()));
+            return node;
+        }
+    }
+    private T getPredecessor(BinaryNode<T> node)
+    {
+        BinaryNode<T> temp = node;
+        while (temp.getRight() != null)
+        {
+            temp = temp.getRight();
+        }
+        return temp.getInfo();
     }
 
     // Restructures this BST to be optimally balanced
     public void balance()
     {
     }
-    public int compare(T el1, T el2)
-    {
-        return el1.compareTo(el2);
-    }
+
 }
