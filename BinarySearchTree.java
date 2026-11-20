@@ -10,13 +10,11 @@ import java.util.*;
 public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T>
 {
     protected BinaryNode<T> root; 
-    private int size;
 
     // Creates an empty Binary Search Tree object
     public BinarySearchTree()
     {
-        root = null; 
-        size = 0;
+        root = null;
     }
 
     // Returns true if this BST is empty; otherwise, returns false.
@@ -42,54 +40,53 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Adds element to this BST. The tree retains its BST property.
     public void add (T element)
     {
-         if(root == null)
-        {
-            root = new BinaryNode(element);
-        }
-        else
-        {
-            BinaryNode<T> temp = root;
-            while(temp != null)
-            {
-                int comparison = element.compareTo(temp.getInfo());
-                if(comparison < 0)
-                {
-                    if(temp.getLeft() == null)
-                    {
-                        temp.setLeft(new BinaryNode<>(element));
-                        
-                        return;
-                    }
-                    temp = temp.getLeft();
-                }
-                else
-                {
-                    if(temp.getRight() == null)
-                    {
-                        temp.setRight(new BinaryNode<>(element));
-                        return;
-                    }
-                    temp = temp.getRight();
-                }
-            }
-        }
+        root = add(root, element);
     }
+    private BinaryNode<T> add (BinaryNode<T> node, T element)
+    {
+        if(node == null)
+        {
+            return new BinaryNode<>(element);
+        }
+        int compare = element.compareTo(node.getInfo());
+        if(compare < 0)
+        {
+            node.setLeft(add(node.getLeft(), element));
+        }
+        else if(compare > 0)
+        {
+            node.setRight(add(node.getRight(), element));
+        }
+        return node;
+    }
+    
 
     // Returns true if this BST contains an element e such that 
     // e.compareTo(element) == 0; otherwise, returns false.
     public boolean contains (T element)
     {
-        List<T> temp = preorderTraverse();
-        for(int i = 0; i<temp.size(); i++)
-        {
-            if(temp.get(i).compareTo(element)== 0)
-            {
-                return true;
-            }
-        }
-        return false;
+        return contains(root, element);
     }
-
+    private boolean contains(BinaryNode<T> node, T element)
+    {
+        if(node == null)
+        {
+            return false;
+        }
+        int compare = node.getInfo().compareTo(element);
+        if(compare == 0)
+        {
+            return true;
+        }
+        if(compare < 0)
+        {
+            return contains(node.getRight(), element);
+        }
+        else
+        {
+            return contains(node.getLeft(),element);
+        }
+    }
     // Returns a graphical representation of the tree
     public String toString()
     {
@@ -220,6 +217,22 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Restructures this BST to be optimally balanced
     public void balance()
     {
+        List<T> values = inorderTraverse();
+        root = buildBalanced(values, 0, values.size() - 1);
     }
+
+    private BinaryNode<T> buildBalanced(List<T> values, int first, int last)
+    {
+        if (first > last)
+        {
+            return null;
+        }
+        int mid = (first + last) / 2;
+        BinaryNode<T> node = new BinaryNode<>(values.get(mid));
+        node.setLeft(buildBalanced(values, first, mid - 1));
+        node.setRight(buildBalanced(values, mid + 1, last));
+        return node;
+    }
+    
 
 }
